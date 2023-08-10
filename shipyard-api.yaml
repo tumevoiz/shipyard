@@ -1,0 +1,427 @@
+openapi: 3.0.3
+info:
+  title: Shipyard
+  version: 1.0.0
+servers:
+- url: http://localhost:8080
+paths:
+  /api/lighthouse/cluster-stats:
+    get:
+      operationId: getApiLighthouseCluster-stats
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClusterStats'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/lighthouse/state:
+    get:
+      operationId: getApiLighthouseState
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationRefState'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/ships:
+    get:
+      operationId: getApiShips
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ship'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+    post:
+      operationId: postApiShips
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ship'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/ships/{shipId}:
+    get:
+      operationId: getApiShipsShipid
+      parameters:
+      - name: shipId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ship'
+        '400':
+          description: 'Invalid value for: path parameter shipId'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/ships/{name}:
+    get:
+      operationId: getApiShipsName
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ship'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/ships/{p1}/resources:
+    put:
+      operationId: putApiShipsP1Resources
+      parameters:
+      - name: p1
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HardwareResources'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: 'Invalid value for: path parameter p1, Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/shipments:
+    get:
+      description: Find all shipments
+      operationId: getApiShipments
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+    post:
+      description: Schedule a new shipment
+      operationId: postApiShipments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shipment'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: 'Invalid value for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/shipments/{shipId}:
+    get:
+      description: Find all shipments by ship ID
+      operationId: getApiShipmentsShipid
+      parameters:
+      - name: shipId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shipment'
+        '400':
+          description: 'Invalid value for: path parameter shipId'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/shipments/{shipmentId}:
+    delete:
+      description: Delete shipment by ID
+      operationId: deleteApiShipmentsShipmentid
+      parameters:
+      - name: shipmentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: 'Invalid value for: path parameter shipmentId'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+  /api/shipments/{shipmentId}/health:
+    put:
+      description: Update the shipment status
+      operationId: putApiShipmentsShipmentidHealth
+      parameters:
+      - name: shipmentId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShipmentHealth'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: 'Invalid value for: path parameter shipmentId, Invalid value
+            for: body'
+          content:
+            text/plain:
+              schema:
+                type: string
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipyardError'
+components:
+  schemas:
+    ApplicationRefState:
+      type: object
+      properties:
+        ships:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ship'
+        shipments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shipment'
+    ClusterStats:
+      required:
+      - requestedMemory
+      - requestedCpuPercentage
+      - shipCount
+      - shipmentsCount
+      - minusPredictedMemory
+      type: object
+      properties:
+        requestedMemory:
+          type: number
+          format: double
+        requestedCpuPercentage:
+          type: number
+          format: double
+        shipCount:
+          type: integer
+          format: int32
+        shipmentsCount:
+          type: integer
+          format: int32
+        minusPredictedMemory:
+          type: integer
+          format: int32
+    HardwareResources:
+      required:
+      - memory
+      - cpu
+      type: object
+      properties:
+        memory:
+          type: integer
+          format: int32
+        cpu:
+          type: number
+          format: double
+    LighthouseError:
+      required:
+      - message
+      - kind
+      type: object
+      properties:
+        message:
+          type: string
+        kind:
+          type: string
+    ResourceNotFoundError:
+      required:
+      - resourceId
+      - resourceKind
+      - kind
+      type: object
+      properties:
+        resourceId:
+          type: string
+        resourceKind:
+          type: string
+        kind:
+          type: string
+    Ship:
+      required:
+      - id
+      - name
+      - ipAddress
+      - shipmentCidr
+      - lighthouse
+      - currentHardwareResourcesUsage
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ipAddress:
+          type: string
+        shipmentCidr:
+          type: string
+        lighthouse:
+          type: boolean
+        currentHardwareResourcesUsage:
+          $ref: '#/components/schemas/HardwareResources'
+      description: Dock is representation of computing node
+    Shipment:
+      required:
+      - name
+      - image
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        image:
+          type: string
+        hardwareRequirements:
+          $ref: '#/components/schemas/HardwareResources'
+        shipId:
+          type: string
+          format: uuid
+        health:
+          $ref: '#/components/schemas/ShipmentHealth'
+    ShipmentHealth:
+      type: string
+      enum:
+      - Unavailable
+      - Detached
+      - Running
+    ShipyardError:
+      oneOf:
+      - $ref: '#/components/schemas/LighthouseError'
+      - $ref: '#/components/schemas/ResourceNotFoundError'
+      discriminator:
+        propertyName: kind
+        mapping:
+          lighthouseError: '#/components/schemas/LighthouseError'
+          resourceNotFoundError: '#/components/schemas/ResourceNotFoundError'
